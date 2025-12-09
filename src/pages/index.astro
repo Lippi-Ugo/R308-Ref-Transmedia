@@ -1,11 +1,178 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
+import Logo from '../assets/logo.svg';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const modules = import.meta.glob('../assets/photos/*.webp', { eager: true, query: '?url', import: 'default' });
+const images = Object.entries(modules).map(([path, url]) => {
+	const name = path.split('/').pop();
+	return { src: url as string, name };
+});
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Nos Souvenirs Lucie">
+	<main class="max-w-full mx-auto px-16 py-16">
+		<div class="flex items-center gap-6 justify-between mb-16">
+			<Logo class="w-14 h-auto shrink-0 rounded-xl"/>
+			<h1 class="text-4xl font-extrabold text-center text-slate-100 flex-1">Nos Souvenirs Lucie</h1>
+		</div>
+
+		<section class="bg-white/5 ring-1 ring-white/5 rounded-lg p-6 mb-10">
+			<h2 class="text-2xl font-semibold text-amber-300 mb-3">Contexte</h2>
+			<p class="text-sm text-slate-200 leading-relaxed mb-4">À travers la journée apparemment banale d’un étudiant, on suit son amour obsessionnel pour Lucie, rythmé par des messages sans réponse. Quand une ultime notification arrive le soir, la frontière entre romance et malaise vacille : leur histoire n’est peut‑être pas celle qu’il croit.</p>
+
+			<div class="bg-white/3 p-4 rounded-md">
+				<p class="text-xs text-amber-100 font-medium mb-2">Extraits de ses messages (ton volontairement cringe) :</p>
+				<ul class="text-sm text-slate-100 space-y-1 list-disc pl-4">
+					<li>« Lucie, amour de ma vie, je pense à toi à chaque seconde. »</li>
+					<li>« Tu es ma raison de respirer. Reponds s'il te plaît, je ne dors plus. »</li>
+					<li>« J’ai vu tes cheveux aujourd’hui et j’ai failli pleurer de joie. »</li>
+					<li>« Si tu savais comme je t’aime, personne ne pourra nous séparer. »</li>
+					<li>« Je t’ai laissé un petit cadeau près de ta porte. Dis‑moi que tu l’as aimé. »</li>
+				</ul>
+			</div>
+		</section>
+
+		{images.length === 0 ? (
+			<div class="text-center text-slate-500 py-16">Aucune image trouvée. Ajoute des fichiers <code>.webp</code> dans <code>src/assets/photos/</code>.</div>
+		) : (
+			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-12">
+				{images.map((img, idx) => (
+					<Card src={img.src} name={img.name} index={idx} />
+				))}
+			</div>
+		)}
+	</main>
+
+	<script define:vars={{ images }}>
+		window.galleryImages = images;
+		window.currentImageIndex = 0;
+
+		window.openModal = function(index) {
+			window.currentImageIndex = index;
+			const img = window.galleryImages[index];
+			const displayName = img.name?.replace(/\.[^/.]+$/, '') ?? 'photo';
+
+			const overlay = document.createElement('div');
+			overlay.id = 'gallery-modal-overlay';
+			overlay.style.position = 'fixed';
+			overlay.style.inset = '0';
+			overlay.style.display = 'flex';
+			overlay.style.alignItems = 'center';
+			overlay.style.justifyContent = 'center';
+			overlay.style.background = 'rgba(0,0,0,0.8)';
+			overlay.style.zIndex = '9999';
+
+			const container = document.createElement('div');
+			container.style.maxWidth = '90vw';
+			container.style.maxHeight = '90vh';
+			container.style.background = 'transparent';
+			container.style.borderRadius = '0';
+			container.style.padding = '0';
+			container.style.position = 'relative';
+			container.style.boxShadow = 'none';
+			container.style.display = 'flex';
+			container.style.alignItems = 'center';
+			container.style.justifyContent = 'center';
+			container.style.gap = '8px';
+
+			const prevBtn = document.createElement('button');
+			prevBtn.innerText = '❮';
+			prevBtn.style.padding = '6px 10px';
+			prevBtn.style.background = '#fff';
+			prevBtn.style.color = '#000';
+			prevBtn.style.border = 'none';
+			prevBtn.style.borderRadius = '4px';
+			prevBtn.style.cursor = 'pointer';
+			prevBtn.style.fontSize = '16px';
+			prevBtn.style.flexShrink = '0';
+			prevBtn.style.hover = 'background: #f0f0f0';
+			prevBtn.addEventListener('click', () => {
+				window.currentImageIndex = (window.currentImageIndex - 1 + window.galleryImages.length) % window.galleryImages.length;
+				const newImg = window.galleryImages[window.currentImageIndex];
+				const newName = newImg.name?.replace(/\.[^/.]+$/, '') ?? 'photo';
+				imgEl.src = newImg.src;
+				imgEl.alt = newName;
+			});
+
+			const imgEl = document.createElement('img');
+			imgEl.id = 'modal-image';
+			imgEl.src = img.src;
+			imgEl.alt = displayName;
+			imgEl.style.maxWidth = '100%';
+			imgEl.style.maxHeight = '90vh';
+			imgEl.style.display = 'block';
+			imgEl.style.objectFit = 'contain';
+			imgEl.style.borderRadius = '0';
+
+			const nextBtn = document.createElement('button');
+			nextBtn.innerText = '❯';
+			nextBtn.style.padding = '6px 10px';
+			nextBtn.style.background = '#fff';
+			nextBtn.style.color = '#000';
+			nextBtn.style.border = 'none';
+			nextBtn.style.borderRadius = '4px';
+			nextBtn.style.cursor = 'pointer';
+			nextBtn.style.fontSize = '16px';
+			nextBtn.style.flexShrink = '0';
+			nextBtn.addEventListener('click', () => {
+				window.currentImageIndex = (window.currentImageIndex + 1) % window.galleryImages.length;
+				const newImg = window.galleryImages[window.currentImageIndex];
+				const newName = newImg.name?.replace(/\.[^/.]+$/, '') ?? 'photo';
+				imgEl.src = newImg.src;
+				imgEl.alt = newName;
+			});
+
+			const closeBtn = document.createElement('button');
+			closeBtn.innerText = '×';
+			closeBtn.style.position = 'absolute';
+			closeBtn.style.top = '1px';
+			closeBtn.style.right = '20px';
+			closeBtn.style.width = '36px';
+			closeBtn.style.height = '36px';
+			closeBtn.style.border = 'none';
+			closeBtn.style.background = '#fff';
+			closeBtn.style.color = '#000';
+			closeBtn.style.borderRadius = '999px';
+			closeBtn.style.cursor = 'pointer';
+			closeBtn.style.fontSize = '18px';
+			closeBtn.style.fontFamily = 'sans-serif';
+			closeBtn.style.transform = 'rotate(90deg)';
+			closeBtn.style.transformOrigin = '50% 50%';
+			closeBtn.addEventListener('click', () => {
+				overlay.remove();
+				document.body.style.overflow = '';
+			});
+
+			container.appendChild(prevBtn);
+			container.appendChild(imgEl);
+			container.appendChild(nextBtn);
+			container.appendChild(closeBtn);
+
+			overlay.appendChild(container);
+			overlay.addEventListener('click', (e) => {
+				if (e.target === overlay) {
+					overlay.remove();
+					document.body.style.overflow = '';
+				}
+			});
+
+			document.body.appendChild(overlay);
+			document.body.style.overflow = 'hidden';
+
+			// Keyboard navigation
+			const handleKeydown = (e) => {
+				if (e.key === 'ArrowLeft') {
+					prevBtn.click();
+				} else if (e.key === 'ArrowRight') {
+					nextBtn.click();
+				} else if (e.key === 'Escape') {
+					overlay.remove();
+					document.body.style.overflow = '';
+					document.removeEventListener('keydown', handleKeydown);
+				}
+			};
+			document.addEventListener('keydown', handleKeydown);
+		};
+	</script>
 </Layout>
