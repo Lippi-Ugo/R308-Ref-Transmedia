@@ -17,22 +17,6 @@ const images = Object.entries(modules).map(([path, url]) => {
 			<h1 class="text-4xl font-extrabold text-center text-slate-100 flex-1">Nos Souvenirs Lucie</h1>
 		</div>
 
-		<section class="bg-white/5 ring-1 ring-white/5 rounded-lg p-6 mb-10">
-			<h2 class="text-2xl font-semibold text-amber-300 mb-3">Contexte</h2>
-			<p class="text-sm text-slate-200 leading-relaxed mb-4">À travers la journée apparemment banale d’un étudiant, on suit son amour obsessionnel pour Lucie, rythmé par des messages sans réponse. Quand une ultime notification arrive le soir, la frontière entre romance et malaise vacille : leur histoire n’est peut‑être pas celle qu’il croit.</p>
-
-			<div class="bg-white/3 p-4 rounded-md">
-				<p class="text-xs text-amber-100 font-medium mb-2">Extraits de ses messages (ton volontairement cringe) :</p>
-				<ul class="text-sm text-slate-100 space-y-1 list-disc pl-4">
-					<li>« Lucie, amour de ma vie, je pense à toi à chaque seconde. »</li>
-					<li>« Tu es ma raison de respirer. Reponds s'il te plaît, je ne dors plus. »</li>
-					<li>« J’ai vu tes cheveux aujourd’hui et j’ai failli pleurer de joie. »</li>
-					<li>« Si tu savais comme je t’aime, personne ne pourra nous séparer. »</li>
-					<li>« Je t’ai laissé un petit cadeau près de ta porte. Dis‑moi que tu l’as aimé. »</li>
-				</ul>
-			</div>
-		</section>
-
 		{images.length === 0 ? (
 			<div class="text-center text-slate-500 py-16">Aucune image trouvée. Ajoute des fichiers <code>.webp</code> dans <code>src/assets/photos/</code>.</div>
 		) : (
