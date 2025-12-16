@@ -12,9 +12,9 @@ const images = Object.entries(modules).map(([path, url]) => {
 
 <Layout title="Nos Souvenirs Lucie">
 	<main class="max-w-full mx-auto px-16 py-16">
-		<div class="flex items-center gap-6 justify-between mb-16">
+		<div class="flex flex-col md:flex-row md:items-center md:gap-6 md:justify-between mb-16 items-center gap-4">
 			<Logo class="w-14 h-auto shrink-0 rounded-xl"/>
-			<h1 class="text-4xl font-extrabold text-center text-slate-100 flex-1">Nos Souvenirs Lucie</h1>
+			<h1 class="text-4xl font-extrabold text-center text-slate-100 md:flex-1">Nos Souvenirs Lucie</h1>
 		</div>
 
 		{images.length === 0 ? (
@@ -36,6 +36,7 @@ const images = Object.entries(modules).map(([path, url]) => {
 			window.currentImageIndex = index;
 			const img = window.galleryImages[index];
 			const displayName = img.name?.replace(/\.[^/.]+$/, '') ?? 'photo';
+			const isMobile = window.innerWidth < 768;
 
 			const overlay = document.createElement('div');
 			overlay.id = 'gallery-modal-overlay';
@@ -71,6 +72,11 @@ const images = Object.entries(modules).map(([path, url]) => {
 			prevBtn.style.fontSize = '16px';
 			prevBtn.style.flexShrink = '0';
 			prevBtn.style.hover = 'background: #f0f0f0';
+			prevBtn.style.position = isMobile ? 'absolute' : 'static';
+			prevBtn.style.left = isMobile ? '5px' : 'auto';
+			prevBtn.style.top = isMobile ? '50%' : 'auto';
+			prevBtn.style.transform = isMobile ? 'translateY(-50%)' : 'none';
+			prevBtn.style.zIndex = isMobile ? '10000' : 'auto';
 			prevBtn.addEventListener('click', () => {
 				window.currentImageIndex = (window.currentImageIndex - 1 + window.galleryImages.length) % window.galleryImages.length;
 				const newImg = window.galleryImages[window.currentImageIndex];
@@ -99,6 +105,11 @@ const images = Object.entries(modules).map(([path, url]) => {
 			nextBtn.style.cursor = 'pointer';
 			nextBtn.style.fontSize = '16px';
 			nextBtn.style.flexShrink = '0';
+			nextBtn.style.position = isMobile ? 'absolute' : 'static';
+			nextBtn.style.right = isMobile ? '5px' : 'auto';
+			nextBtn.style.top = isMobile ? '50%' : 'auto';
+			nextBtn.style.transform = isMobile ? 'translateY(-50%)' : 'none';
+			nextBtn.style.zIndex = isMobile ? '10000' : 'auto';
 			nextBtn.addEventListener('click', () => {
 				window.currentImageIndex = (window.currentImageIndex + 1) % window.galleryImages.length;
 				const newImg = window.galleryImages[window.currentImageIndex];
@@ -110,8 +121,8 @@ const images = Object.entries(modules).map(([path, url]) => {
 			const closeBtn = document.createElement('button');
 			closeBtn.innerText = '×';
 			closeBtn.style.position = 'absolute';
-			closeBtn.style.top = '1px';
-			closeBtn.style.right = '20px';
+			closeBtn.style.top = isMobile ? '10px' : '1px';
+			closeBtn.style.right = isMobile ? '10px' : '20px';
 			closeBtn.style.width = '36px';
 			closeBtn.style.height = '36px';
 			closeBtn.style.border = 'none';
