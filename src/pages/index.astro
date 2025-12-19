@@ -35,7 +35,7 @@ const images = Object.entries(modules).map(([path, url]) => {
 		window.openModal = function(index) {
 			window.currentImageIndex = index;
 			const img = window.galleryImages[index];
-			const displayName = img.name?.replace(/\.[^/.]+$/, '') ?? 'photo';
+			const displayName = img.name?.replace(/\.[^/.]+$/, '').replace(/-/g, ' ') ?? 'photo';
 			const isMobile = window.innerWidth < 768;
 
 			const overlay = document.createElement('div');
