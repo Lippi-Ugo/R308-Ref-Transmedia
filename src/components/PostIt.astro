@@ -1,0 +1,21 @@
+---
+const { title, content, color = 'yellow' } = Astro.props;
+
+const colorClasses = {
+  yellow: 'bg-yellow-200',
+  blue: 'bg-blue-200',
+  pink: 'bg-pink-200',
+  green: 'bg-green-200',
+  purple: 'bg-purple-200',
+  orange: 'bg-orange-200'
+};
+---
+
+<div class={`${colorClasses[color]} p-6 min-h-[200px] max-w-[250px] -rotate-2 hover:rotate-0 transition-transform duration-200 shadow-lg hover:shadow-xl cursor-pointer relative`}>
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-6 bg-yellow-100/50 rounded-b-sm"></div>
+  
+  <h3 class="font-handwriting text-xl mb-3 text-gray-800 font-semibold">{title}</h3>
+  <div class="font-handwriting text-gray-700 whitespace-pre-line">
+    <slot>{content}</slot>
+  </div>
+</div>
